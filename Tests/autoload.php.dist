@@ -1,0 +1,14 @@
+<?php
+
+$vendorDir = __DIR__.'/../../../../..';
+require_once $vendorDir.'/symfony/src/Symfony/Component/ClassLoader/UniversalClassLoader.php';
+
+$loader = new Symfony\Component\ClassLoader\UniversalClassLoader();
+$loader->registerNamespaces(array(
+    'Symfony'                            => $vendorDir.'/symfony/src',
+    'Doctrine\Common'                    => $vendorDir.'/doctrine-common/lib',
+    'Doctrine\DBAL'                      => $vendorDir.'/doctrine-dbal/lib',
+    'Doctrine'                           => $vendorDir.'/doctrine/lib',
+    'OpenSky\Bundle\RuntimeConfigBundle' => $vendorDir.'/bundles',
+));
+$loader->register();
