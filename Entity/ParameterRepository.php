@@ -13,14 +13,14 @@ class ParameterRepository extends EntityRepository implements ParameterProviderI
     public function getParametersAsKeyValueHash()
     {
         $results = $this->createQueryBuilder('p')
-            ->select('p.key', 'p.value')
+            ->select('p.name', 'p.value')
             ->getQuery()
             ->getResult();
 
         $parameters = array();
 
         foreach ($results as $result) {
-            $parameters[$result['key']] = $result['value'];
+            $parameters[$result['name']] = $result['value'];
         }
 
         return $parameters;

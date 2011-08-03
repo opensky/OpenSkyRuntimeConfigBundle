@@ -6,12 +6,12 @@ use OpenSky\Bundle\RuntimeConfigBundle\Entity\Parameter;
 
 class ParameterTest extends \PHPUnit_Framework_TestCase
 {
-    public function testShouldSetAndGetKeyProperty()
+    public function testShouldSetAndGetNameProperty()
     {
         $parameter = new Parameter();
 
-        $parameter->setKey('foo');
-        $this->assertEquals('foo', $parameter->getKey());
+        $parameter->setName('foo');
+        $this->assertEquals('foo', $parameter->getName());
     }
 
     public function testShouldSetAndGetValueProperty()

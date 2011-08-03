@@ -67,8 +67,8 @@ class ParameterRepositoryTest extends \PHPUnit_Framework_TestCase
             ),
             array(
                 array(
-                    array('key' => 'foo', 'value' => 'bar'),
-                    array('key' => 'fuu', 'value' => 'baz'),
+                    array('name' => 'foo', 'value' => 'bar'),
+                    array('name' => 'fuu', 'value' => 'baz'),
                 ),
                 array('foo' => 'bar', 'fuu' => 'baz'),
             )

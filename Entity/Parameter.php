@@ -12,19 +12,19 @@ class Parameter
      * @ORM\Column(type="string")
      * @Assert\NotBlank
      */
-    protected $key;
+    protected $name;
 
     /** @ORM\Column(type="string") */
     protected $value;
 
-    public function getKey()
+    public function getName()
     {
-        return $this->key;
+        return $this->name;
     }
 
-    public function setKey($key)
+    public function setName($name)
     {
-        $this->key = $key;
+        $this->name = $name;
     }
 
     public function getValue()
