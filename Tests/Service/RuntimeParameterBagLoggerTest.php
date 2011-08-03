@@ -15,7 +15,7 @@ class RuntimeParameterBagLoggerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @dataProvider provideValidLevels
+     * @dataProvider provideValidLogLevels
      */
     public function testShouldLogWithValidLevel($level)
     {
@@ -30,7 +30,7 @@ class RuntimeParameterBagLoggerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @dataProvider provideValidLevels
+     * @dataProvider provideValidLogLevels
      */
     public function testShouldDoNothingWithoutInnerLogger($level)
     {
@@ -38,7 +38,7 @@ class RuntimeParameterBagLoggerTest extends \PHPUnit_Framework_TestCase
         $logger->log('message');
     }
 
-    public function provideValidLevels()
+    public function provideValidLogLevels()
     {
         return array_map(
             function($level){ return (array) $level; },
