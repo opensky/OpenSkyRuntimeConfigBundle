@@ -8,21 +8,24 @@ use Symfony\Component\DependencyInjection\ParameterBag\FrozenParameterBag;
 class RuntimeParameterBag extends FrozenParameterBag
 {
     private $initialized = false;
+    private $logger;
     private $parameterProvider;
     private $strict;
 
     /**
      * Constructor.
      *
-     * @param ParameterProvider $parameterProvider Parameter provider
-     * @param boolean           $strict            Throw exceptions for non-existent keys
+     * @param ParameterProvider         $parameterProvider Parameter provider
+     * @param boolean                   $strict            Throw exceptions for non-existent keys
+     * @param RuntimeParameterBagLogger $logger            Logger
      */
-    public function __construct(ParameterProviderInterface $parameterProvider, $strict = true)
+    public function __construct(ParameterProviderInterface $parameterProvider, $strict = true, RuntimeParameterBagLogger $logger = null)
     {
         parent::__construct();
 
         $this->parameterProvider = $parameterProvider;
         $this->strict = $strict;
+        $this->logger = $logger;
     }
 
     /**
@@ -45,6 +48,10 @@ class RuntimeParameterBag extends FrozenParameterBag
         try {
             return parent::get($name);
         } catch (ParameterNotFoundException $e) {
+            if (null !== $this->logger) {
+                $this->logger->log($e->getMessage());
+            }
+
             if ($this->strict) {
                 throw $e;
             } else {
