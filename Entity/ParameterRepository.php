@@ -3,12 +3,12 @@
 namespace OpenSky\Bundle\RuntimeConfigBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
-use OpenSky\Bundle\RuntimeConfigBundle\Service\ParameterProviderInterface;
+use OpenSky\Bundle\RuntimeConfigBundle\Model\ParameterProviderInterface;
 
 class ParameterRepository extends EntityRepository implements ParameterProviderInterface
 {
     /**
-     * @see OpenSky\Bundle\RuntimeConfigBundle\ParameterProvider\ParameterProviderInterface::getParametersAsKeyValueHash()
+     * @see OpenSky\Bundle\RuntimeConfigBundle\Model\ParameterProviderInterface::getParametersAsKeyValueHash()
      */
     public function getParametersAsKeyValueHash()
     {

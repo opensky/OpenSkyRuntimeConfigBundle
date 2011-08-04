@@ -86,7 +86,7 @@ class RuntimeParameterBagTest extends \PHPUnit_Framework_TestCase
 
     private function getMockParameterProvider(array $parameters)
     {
-        $provider = $this->getMock('OpenSky\Bundle\RuntimeConfigBundle\Service\ParameterProviderInterface');
+        $provider = $this->getMock('OpenSky\Bundle\RuntimeConfigBundle\Model\ParameterProviderInterface');
 
         $provider->expects($this->any())
             ->method('getParametersAsKeyValueHash')

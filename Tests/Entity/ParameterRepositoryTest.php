@@ -17,7 +17,7 @@ class ParameterRepositoryTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->assertInstanceOf('OpenSky\Bundle\RuntimeConfigBundle\Service\ParameterProviderInterface', $repository);
+        $this->assertInstanceOf('OpenSky\Bundle\RuntimeConfigBundle\Model\ParameterProviderInterface', $repository);
     }
 
     /**

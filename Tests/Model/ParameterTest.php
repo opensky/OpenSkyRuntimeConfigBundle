@@ -1,8 +1,8 @@
 <?php
 
-namespace OpenSky\Bundle\RuntimeConfigBundle\Tests\Entity;
+namespace OpenSky\Bundle\RuntimeConfigBundle\Tests\Model;
 
-use OpenSky\Bundle\RuntimeConfigBundle\Entity\Parameter;
+use OpenSky\Bundle\RuntimeConfigBundle\Model\Parameter;
 
 class ParameterTest extends \PHPUnit_Framework_TestCase
 {

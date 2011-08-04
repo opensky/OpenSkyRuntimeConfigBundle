@@ -2,6 +2,7 @@
 
 namespace OpenSky\Bundle\RuntimeConfigBundle\Service;
 
+use OpenSky\Bundle\RuntimeConfigBundle\Model\ParameterProviderInterface;
 use Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException;
 use Symfony\Component\DependencyInjection\ParameterBag\FrozenParameterBag;
 
