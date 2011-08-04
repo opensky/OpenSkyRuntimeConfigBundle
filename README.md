@@ -127,8 +127,8 @@ likely implement a CRUD interface to define and edit parameters via an admin
 controller in your application.
 
 Additionally, this allows us to add custom behavior to our ParameterProvider.
-For instance, we can using Symfony2's YAML component to interpret parameter
-values stored in the database as strings.
+For instance, we can use Symfony2's YAML component to interpret parameter values
+stored in the database as strings.
 
 Consider the following Entity:
 
