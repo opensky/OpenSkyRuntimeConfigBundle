@@ -120,7 +120,7 @@ an arbitrary placeholder to satisfy CheckDefinitionValidityPass. In reality, our
 service is simply a means to lazily load our parameter. The value returned by
 `get()` can be anything (e.g. object, scalar, array).
 
-## Recipe: Interpretting Parameter Values as YAML ##
+## Recipe: Interpreting Parameter Values as YAML ##
 
 If you're using Doctrine ORM (or any database) to hold your parameters, you will
 likely implement a CRUD interface to define and edit parameters via an admin
