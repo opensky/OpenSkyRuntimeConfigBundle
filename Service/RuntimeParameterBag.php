@@ -3,33 +3,44 @@
 namespace OpenSky\Bundle\RuntimeConfigBundle\Service;
 
 use OpenSky\Bundle\RuntimeConfigBundle\Model\ParameterProviderInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException;
 use Symfony\Component\DependencyInjection\ParameterBag\FrozenParameterBag;
 
-class RuntimeParameterBag extends FrozenParameterBag
+class RuntimeParameterBag extends FrozenParameterBag implements ContainerAwareInterface
 {
+    private $container;
     private $initialized = false;
     private $logger;
     private $parameterProvider;
-    private $strict;
 
     /**
      * Constructor.
      *
      * @param ParameterProvider         $parameterProvider Parameter provider
-     * @param boolean                   $strict            Throw exceptions for non-existent keys
      * @param RuntimeParameterBagLogger $logger            Logger
      */
-    public function __construct(ParameterProviderInterface $parameterProvider, $strict = true, RuntimeParameterBagLogger $logger = null)
+    public function __construct(ParameterProviderInterface $parameterProvider, RuntimeParameterBagLogger $logger = null)
     {
         parent::__construct();
 
         $this->parameterProvider = $parameterProvider;
-        $this->strict = $strict;
         $this->logger = $logger;
     }
 
     /**
+     * @see Symfony\Component\DependencyInjection\ContainerAwareInterface::setContainer()
+     */
+    public function setContainer(ContainerInterface $container = null)
+    {
+        $this->container = $container;
+    }
+
+    /**
+     * Gets all defined parameters. This method does not consider parameters
+     * from the service container, regardless of its availability.
+     *
      * @see Symfony\Component\DependencyInjection\ParameterBag\ParameterBag::all()
      */
     public function all()
@@ -40,6 +51,9 @@ class RuntimeParameterBag extends FrozenParameterBag
     }
 
     /**
+     * Gets a parameter by name. If the parameter is undefined, this method will
+     * defer to the service container if available.
+     *
      * @see Symfony\Component\DependencyInjection\ParameterBag\ParameterBag::get()
      */
     public function get($name)
@@ -53,15 +67,18 @@ class RuntimeParameterBag extends FrozenParameterBag
                 $this->logger->log($e->getMessage());
             }
 
-            if ($this->strict) {
-                throw $e;
+            if ($this->container) {
+                return $this->container->getParameter($name);
             } else {
-                return null;
+                throw $e;
             }
         }
     }
 
     /**
+     * Returns whether a parameter is defined. This method does not consider
+     * parameters from the service container, regardless of its availability.
+     *
      * @see Symfony\Component\DependencyInjection\ParameterBag\ParameterBag::has()
      */
     public function has($name)
@@ -69,17 +86,6 @@ class RuntimeParameterBag extends FrozenParameterBag
         $this->initialize();
 
         return parent::has($name);
-    }
-
-    /**
-     * Return whether the RuntimeParameterBag is strict and will throw an
-     * exception when getting a nonexistent key.
-     *
-     * @return boolean
-     */
-    public function isStrict()
-    {
-        return $this->strict;
     }
 
     private function initialize()

@@ -6,11 +6,11 @@ use OpenSky\Bundle\RuntimeConfigBundle\Service\RuntimeParameterBag;
 
 class RuntimeParameterBagTest extends \PHPUnit_Framework_TestCase
 {
-    public function testConstructorDefaultsToStrictMode()
+    public function testShouldImplementContainerAwareInterface()
     {
-        $bag = new RuntimeParameterBag($this->getMockParameterProvider(array()));
+        $bag = new RuntimeParameterBag($this->getMockParameterProvider());
 
-        $this->assertTrue($bag->isStrict());
+        $this->assertInstanceOf('Symfony\Component\DependencyInjection\ContainerAwareInterface', $bag);
     }
 
     public function testAllShouldReturnAllParameters()
@@ -50,26 +50,27 @@ class RuntimeParameterBagTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('baz', $bag->get('fuu'));
     }
 
-    public function testGetShouldReturnNullForNonexistentParameterWhenNotStrict()
+    public function testGetShouldDeferToContainerForUndefinedParameterWithContainer()
     {
-        $bag = new RuntimeParameterBag($this->getMockParameterProvider(array()), false);
+        $container = $this->getMock('Symfony\Component\DependencyInjection\ContainerInterface');
 
-        $this->assertNull($bag->get('foo'));
+        $container->expects($this->once())
+            ->method('getParameter')
+            ->with('foo')
+            ->will($this->returnValue('bar'));
+
+        $bag = new RuntimeParameterBag($this->getMockParameterProvider());
+        $bag->setContainer($container);
+
+        $this->assertEquals('bar', $bag->get('foo'));
     }
 
     /**
      * @expectedException Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException
      */
-    public function testGetShouldThrowExceptionForNonexistentParameterWhenStrict()
+    public function testGetShouldThrowExceptionForUndefinedParameterWithoutContainer()
     {
-        $bag = new RuntimeParameterBag($this->getMockParameterProvider(array()), true);
-
-        $bag->get('foo');
-    }
-
-    public function testGetShouldLogNonexistentParameterWithAvailableLoggerWhenNotStrict()
-    {
-        $bag = new RuntimeParameterBag($this->getMockParameterProvider(array()), false, $this->getMockRuntimeParameterBagLogger('foo'));
+        $bag = new RuntimeParameterBag($this->getMockParameterProvider());
 
         $bag->get('foo');
     }
@@ -77,14 +78,14 @@ class RuntimeParameterBagTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException
      */
-    public function testGetShouldLogNonexistentParameterWithAvailableLoggerWhenStrict()
+    public function testGetShouldLogNonexistentParameterWithAvailableLogger()
     {
-        $bag = new RuntimeParameterBag($this->getMockParameterProvider(array()), true, $this->getMockRuntimeParameterBagLogger('foo'));
+        $bag = new RuntimeParameterBag($this->getMockParameterProvider(), $this->getMockRuntimeParameterBagLogger('foo'));
 
         $bag->get('foo');
     }
 
-    private function getMockParameterProvider(array $parameters)
+    private function getMockParameterProvider(array $parameters = array())
     {
         $provider = $this->getMock('OpenSky\Bundle\RuntimeConfigBundle\Model\ParameterProviderInterface');
 

@@ -56,7 +56,7 @@ The RuntimeParameterBag may be configured with the following:
 
     opensky_runtime_config:
         provider: parameter.provider.service
-        strict:   true
+        cascade:  true
         logging:
             enabled: true
             level:   debug
@@ -65,18 +65,19 @@ These settings are explained below:
 
  * `provider`: A service implementing ParameterProviderInterface. If you are
     using Doctrine ORM as your datasource, this could be an EntityRepository.
- * `strict`: Whether exceptions should be thrown for accessing nonexistent
-    parameters. If disabled, `null` will be returned instead.
- * `logging.enabled`: Whether to enable logging of nonexistent parameter access.
-    If you are using Monolog, logs will be sent to the "opensky.runtime_config"
-    channel.
+ * `cascade`: Whether calls to `has()` and `get()` should cascade to the service
+    container when the parameter does not exist in the runtime configuration.
+    Note that this will not change the behavior of `all()`, which always only
+    returns parameters from the runtime configuration.
+ * `logging.enabled`: Whether to enable logging access to undefined parameters,
+    regardless of whether service container cascading is enabled. If you are
+    using Monolog, logs will be sent to the "opensky.runtime_config" channel.
  * `logging.level`: Log level to use (should be a LoggerInterface method).
 
-Note: for development environments, you'd likely want to keep strict mode on.
-But in production, it may be preferable to fail gracefully by logging errors and
-safely handling `null` return values. For instance, if you expected a parameter
-"my.service.enabled", which was undefined, `null` could still be interpreted by
-your service as "I should disable my functionality".
+Note: if you're using `cascade`, it's a good idea to define default values for
+your runtime configuration parameters in your service container. This will help
+avoid an undesirable ParameterNotFoundException when fetching an undefined
+parameter.
 
 ## Injecting Parameters ##
 
@@ -119,6 +120,38 @@ define the class on our service definition. The above examples use "stdClass" as
 an arbitrary placeholder to satisfy CheckDefinitionValidityPass. In reality, our
 service is simply a means to lazily load our parameter. The value returned by
 `get()` can be anything (e.g. object, scalar, array).
+
+### Cascade Mode ###
+
+If you have enbaled cascade mode, `get()` will attempt to fetch undefined
+runtime parameters from the service container before throwing an exception.
+
+Building upon the previous XML example, this would look like:
+
+    # Resources/config/my_service.xml
+
+    <parameters>
+        <parameter key="my.service.enabled">false</parameter>
+    </parameters>
+
+    <services>
+        <service id="my.service" class="MyService">
+            <argument type="service">
+                <service class="stdClass" factory-service="opensky.runtime_config" factory-method="get">
+                    <argument>my.service.enabled</argument>
+                </service>
+            </argument>
+        </service>
+    </service>
+
+In this example, `get('my.services.enabled')` would return false even if the
+parameter was not defined in the runtime configuration. This is a safe way to
+introduce new parameters, which might not yet be available in your provider at
+the time of deployment.
+
+Note: parameters sourced from the runtime configuration provider are **not**
+resolved for placeholder syntax (i.e. "%reference%"), unlike those defined in
+the service container.
 
 ## Recipe: Interpretting Parameter Values as YAML ##
 

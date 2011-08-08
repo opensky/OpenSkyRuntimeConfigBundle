@@ -18,7 +18,7 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->children()
                 ->scalarNode('provider')->isRequired()->cannotBeEmpty()->end()
-                ->scalarNode('strict')->defaultTrue()->end()
+                ->scalarNode('cascade')->defaultTrue()->end()
                 ->arrayNode('logging')
                     ->addDefaultsIfNotSet()
                     ->canBeUnset()

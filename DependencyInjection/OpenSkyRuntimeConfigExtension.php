@@ -23,7 +23,11 @@ class OpenSkyRuntimeConfigExtension extends Extension
         $config = $processor->processConfiguration(new Configuration(), $configs);
 
         $container->setAlias('opensky.runtime_config.provider', $config['provider']);
-        $container->setParameter('opensky.runtime_config.strict', $config['strict']);
+
+        if ($config['cascade']) {
+            $container->getDefinition('opensky.runtime_config')->addMethodCall('setContainer', array(new Reference('service_container')));
+        }
+
         $container->setParameter('opensky.runtime_config.logger.level', $config['logging']['level']);
 
         if ($config['logging']['enabled']) {

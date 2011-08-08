@@ -18,30 +18,60 @@ class OpenSkyRuntimeConfigExtensionTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @dataProvider provideProviderAndStrictnessOptions
+     * @dataProvider provideProviderOptions
      */
-    public function testLoadShouldSetProviderAliasAndStrictness($provider, $strict)
+    public function testLoadShouldSetProviderAlias($provider)
+    {
+        $container = new ContainerBuilder();
+        $loader = new OpenSkyRuntimeConfigExtension();
+
+        $config = array('provider' => $provider);
+
+        $loader->load(array($config), $container);
+
+        $this->assertEquals($provider, (string) $container->getAlias('opensky.runtime_config.provider'));
+    }
+
+    public function provideProviderOptions()
+    {
+        return array(
+            array('provider.real'),
+            array('provider.other'),
+        );
+    }
+
+    public function testLoadShouldInjectContainerIfCascadeEnabled()
     {
         $container = new ContainerBuilder();
         $loader = new OpenSkyRuntimeConfigExtension();
 
         $config = array(
-            'provider' => $provider,
-            'strict' => $strict,
+            'provider' => 'provider.real',
+            // Cascade is enabled by default
         );
 
         $loader->load(array($config), $container);
 
-        $this->assertEquals($provider, (string) $container->getAlias('opensky.runtime_config.provider'));
-        $this->assertEquals($strict, $container->getParameter('opensky.runtime_config.strict'));
+        $calls = $container->getDefinition('opensky.runtime_config')->getMethodCalls();
+
+        $this->assertEquals(1, count($calls));
+        $this->assertEquals('setContainer', $calls[0][0]);
+        $this->assertEquals('service_container', (string) $calls[0][1][0]);
     }
 
-    public function provideProviderAndStrictnessOptions()
+    public function testLoadShouldNotInjectContainerIfCascadeDisabled()
     {
-        return array(
-            array('provider.real', true),
-            array('provider.other', false),
+        $container = new ContainerBuilder();
+        $loader = new OpenSkyRuntimeConfigExtension();
+
+        $config = array(
+            'provider' => 'provider.real',
+            'cascade' => false,
         );
+
+        $loader->load(array($config), $container);
+
+        $this->assertEquals(0, count($container->getDefinition('opensky.runtime_config')->getMethodCalls()));
     }
 
     public function testLoadShouldAddLoggerArgumentIfLoggingEnabled()
@@ -51,9 +81,7 @@ class OpenSkyRuntimeConfigExtensionTest extends \PHPUnit_Framework_TestCase
 
         $config = array(
             'provider' => 'provider.real',
-            'logging' => array(
-                'enabled' => true,
-            ),
+            // Logging is enabled by default
         );
 
         $loader->load(array($config), $container);
