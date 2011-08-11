@@ -5,7 +5,6 @@
 
     <parameters>
         <parameter key="opensky.runtime_config.class">OpenSky\Bundle\RuntimeConfigBundle\Service\RuntimeParameterBag</parameter>
-        <parameter key="opensky.runtime_config.strict">true</parameter>
         <parameter key="opensky.runtime_config.logger.class">OpenSky\Bundle\RuntimeConfigBundle\Service\RuntimeParameterBagLogger</parameter>
         <parameter key="opensky.runtime_config.logger.level">debug</parameter>
     </parameters>
@@ -13,7 +12,7 @@
     <services>
         <service id="opensky.runtime_config" class="%opensky.runtime_config.class%">
             <argument type="service" id="opensky.runtime_config.provider" />
-            <argument>%opensky.runtime_config.strict%</argument>
+            <argument type="service" id="opensky.runtime_config.logger" />
         </service>
 
         <service id="opensky.runtime_config.logger" class="%opensky.runtime_config.logger.class%" public="false">
