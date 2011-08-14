@@ -123,7 +123,7 @@ service is simply a means to lazily load our parameter. The value returned by
 
 ### Cascade Mode ###
 
-If you have enbaled cascade mode, `get()` will attempt to fetch undefined
+If you have enabled cascade mode, `get()` will attempt to fetch undefined
 runtime parameters from the service container before throwing an exception.
 
 Building upon the previous XML example, this would look like:
