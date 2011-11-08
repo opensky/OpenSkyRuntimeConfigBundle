@@ -6,6 +6,7 @@
     <parameters>
         <parameter key="opensky.runtime_config.class">OpenSky\Bundle\RuntimeConfigBundle\Service\RuntimeParameterBag</parameter>
         <parameter key="opensky.runtime_config.logger.class">OpenSky\Bundle\RuntimeConfigBundle\Service\RuntimeParameterBagLogger</parameter>
+        <parameter key="opensky.runtime_config.twig.class">OpenSky\Bundle\RuntimeConfigBundle\Twig\Extension\RuntimeConfigExtension</parameter>
         <parameter key="opensky.runtime_config.logger.level">debug</parameter>
     </parameters>
 
@@ -19,6 +20,11 @@
             <argument>%opensky.runtime_config.logger.level%</argument>
             <argument type="service" id="logger" on-invalid="null" />
             <tag name="monolog.logger" channel="opensky.runtime_config" />
+        </service>
+
+        <service id="opensky.runtime_config.twig" class="%opensky.runtime_config.twig.class%">
+            <argument type="service" id="opensky.runtime_config" />
+            <tag name="twig.extension" />
         </service>
     </services>
 
