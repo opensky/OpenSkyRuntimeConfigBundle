@@ -3,6 +3,7 @@
 namespace OpenSky\Bundle\RuntimeConfigBundle\Twig\Extension;
 
 use OpenSky\Bundle\RuntimeConfigBundle\Service\RuntimeParameterBag;
+use Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException;
 
 class RuntimeConfigExtension extends \Twig_Extension
 {
@@ -42,6 +43,10 @@ class RuntimeConfigExtension extends \Twig_Extension
 
     public function getRuntimeConfig($name)
     {
-        return $this->runtimeConfig->get($name);
+        try {
+            return $this->runtimeConfig->get($name);
+        } catch (ParameterNotFoundException $e) {
+            return null;
+        }
     }
 }
