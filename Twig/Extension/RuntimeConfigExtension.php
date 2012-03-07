@@ -47,6 +47,8 @@ class RuntimeConfigExtension extends \Twig_Extension
             return $this->runtimeConfig->get($name);
         } catch (ParameterNotFoundException $e) {
             return null;
+        } catch (\InvalidArgumentException $e) {
+            return null;
         }
     }
 }
