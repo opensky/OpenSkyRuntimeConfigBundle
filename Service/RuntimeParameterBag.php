@@ -60,19 +60,15 @@ class RuntimeParameterBag extends FrozenParameterBag implements ContainerAwareIn
     {
         $this->initialize();
 
-        try {
-            return parent::get($name);
-        } catch (ParameterNotFoundException $e) {
-            if (null !== $this->logger) {
-                $this->logger->log($e->getMessage());
-            }
-
+        if (!isset($this->parameters[$name])) {
             if ($this->container) {
                 return $this->container->getParameter($name);
-            } else {
-                throw $e;
             }
+
+            return null;
         }
+
+        return $this->parameters[$name];
     }
 
     /**
