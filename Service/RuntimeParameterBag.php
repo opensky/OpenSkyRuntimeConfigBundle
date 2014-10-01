@@ -84,6 +84,12 @@ class RuntimeParameterBag extends FrozenParameterBag implements ContainerAwareIn
         return parent::has($name);
     }
 
+    public function deinitialize()
+    {
+        $this->parameters = array();
+        $this->initialized = false;
+    }
+
     private function initialize()
     {
         if ($this->initialized) {
