@@ -50,6 +50,33 @@ class RuntimeParameterBagTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('baz', $bag->get('fuu'));
     }
 
+    public function testDeinitialize()
+    {
+        $parameters = array(
+            'foo' => 'bar',
+            'fuu' => 'baz',
+        );
+
+        $provider = $this->getMockParameterProvider($parameters);
+
+        $bag = new RuntimeParameterBag($provider);
+
+        $this->assertEquals('bar', $bag->get('foo'));
+        $this->assertEquals('baz', $bag->get('fuu'));
+        $bag->deinitialize();
+
+        $parameters = array(
+            'f' => 'b',
+            'bz' => 'fu',
+        );
+        $provider->expects($this->any())
+            ->method('getParametersAsKeyValueHash')
+            ->will($this->returnValue($parameters));
+
+        $this->assertEquals('f', $bag->get('b'));
+        $this->assertEquals('bz', $bag->get('fu'));
+    }
+
     public function testGetShouldDeferToContainerForUndefinedParameterWithContainer()
     {
         $container = $this->getMock('Symfony\Component\DependencyInjection\ContainerInterface');
