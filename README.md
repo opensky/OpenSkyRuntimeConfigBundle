@@ -121,6 +121,19 @@ an arbitrary placeholder to satisfy CheckDefinitionValidityPass. In reality, our
 service is simply a means to lazily load our parameter. The value returned by
 `get()` can be anything (e.g. object, scalar, array).
 
+### Using expression language (Symfony >= 2.4) ###
+
+If your symfony version >= 2.4, you can use [expression language] like this:
+
+    # MyBundle/Resources/config/my_service.yml
+    
+    my.service:
+        class: MyService
+        arguments:
+          - @=service('opensky.runtime_config').get('my.service.enabled')
+          
+  [expression language]: http://symfony.com/doc/current/book/service_container.html#book-services-expressions
+
 ### Cascade Mode ###
 
 If you have enabled cascade mode, `get()` will attempt to fetch undefined
