@@ -96,7 +96,11 @@ class RuntimeParameterBag extends FrozenParameterBag implements ContainerAwareIn
             return;
         }
 
-        $this->parameters = $this->parameterProvider->getParametersAsKeyValueHash();
-        $this->initialized = true;
+        try {
+            $this->parameters = $this->parameterProvider->getParametersAsKeyValueHash();
+            $this->initialized = true;
+        } catch (\Exception $e) {
+            // Do nothing if database is not set up
+        }
     }
 }
