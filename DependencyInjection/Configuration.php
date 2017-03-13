@@ -16,15 +16,26 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('opensky_runtime_config');
 
+        $loggerLevels = array_filter(get_class_methods(LoggerInterface::class), function($method) {
+            return $method !== 'log';
+        });
+
         $rootNode
             ->children()
-                ->scalarNode('provider')->isRequired()->cannotBeEmpty()->end()
-                ->scalarNode('cascade')->defaultTrue()->end()
+                ->scalarNode('provider')
+                    ->isRequired()
+                    ->cannotBeEmpty()
+                ->end()
+                ->scalarNode('cascade')
+                    ->defaultTrue()
+                ->end()
                 ->arrayNode('logging')
                     ->addDefaultsIfNotSet()
                     ->canBeUnset()
                     ->children()
-                        ->scalarNode('enabled')->defaultTrue()->end()
+                        ->scalarNode('enabled')
+                            ->defaultTrue()
+                        ->end()
                         ->scalarNode('level')
                             ->defaultValue('debug')
                             ->beforeNormalization()
@@ -32,7 +43,7 @@ class Configuration implements ConfigurationInterface
                                 ->then(function($v){ return strtolower($v); })
                             ->end()
                             ->validate()
-                                ->ifNotInArray(get_class_methods(LoggerInterface::class))
+                                ->ifNotInArray($loggerLevels)
                                 ->thenInvalid('The "%s" level does not correspond to a method in LoggerInterface')
                             ->end()
                         ->end()
