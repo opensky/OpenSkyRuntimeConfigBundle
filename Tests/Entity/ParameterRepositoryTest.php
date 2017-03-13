@@ -45,19 +45,19 @@ class ParameterRepositoryTest extends TestCase
 
         $query->expects($this->once())
             ->method('getResult')
-            ->will($this->returnValue($queryResults));
+            ->willReturn($queryResults);
 
         $queryBuilder->expects($this->at(0))
             ->method('select')
-            ->will($this->returnValue($queryBuilder));
+            ->willReturn($queryBuilder);
 
         $queryBuilder->expects($this->at(1))
             ->method('getQuery')
-            ->will($this->returnValue($query));
+            ->willReturn($query);
 
         $repository->expects($this->once())
             ->method('createQueryBuilder')
-            ->will($this->returnValue($queryBuilder));
+            ->willReturn($queryBuilder);
 
         $this->assertEquals($expectedParameters, $repository->getParametersAsKeyValueHash());
     }
