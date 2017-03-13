@@ -17,6 +17,5 @@
         "psr-4": {
             "OpenSky\\Bundle\\RuntimeConfigBundle\\": ""
         }
-    },
-    "target-dir": "OpenSky/Bundle/RuntimeConfigBundle"
+    }
 }
