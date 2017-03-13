@@ -3,8 +3,9 @@
 namespace OpenSky\Bundle\RuntimeConfigBundle\Tests\Model;
 
 use OpenSky\Bundle\RuntimeConfigBundle\Model\Parameter;
+use PHPUnit\Framework\TestCase;
 
-class ParameterTest extends \PHPUnit_Framework_TestCase
+class ParameterTest extends TestCase
 {
     public function testShouldSetAndGetNameProperty()
     {

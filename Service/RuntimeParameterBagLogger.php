@@ -2,7 +2,7 @@
 
 namespace OpenSky\Bundle\RuntimeConfigBundle\Service;
 
-use Symfony\Component\HttpKernel\Log\LoggerInterface;
+use Psr\Log\LoggerInterface;
 
 class RuntimeParameterBagLogger
 {
@@ -14,11 +14,15 @@ class RuntimeParameterBagLogger
      *
      * @param string          $level  Log level (should correspond to a logger method)
      * @param LoggerInterface $logger Logger service
-     * @throws InvalidArgumentException if level does not correspond to a method in LoggerInterface
+     * @throws \InvalidArgumentException if level does not correspond to a method in LoggerInterface
      */
     public function __construct($level, LoggerInterface $logger = null)
     {
-        if (!in_array($level, get_class_methods('Symfony\Component\HttpKernel\Log\LoggerInterface'))) {
+        $levels = array_filter(get_class_methods(LoggerInterface::class), function($method) {
+            return $method !== 'log';
+        });
+
+        if (!in_array($level, $levels)) {
             throw new \InvalidArgumentException(sprintf('The "%s" level does not correspond to a method in LoggerInterface', $level));
         }
 
@@ -27,7 +31,7 @@ class RuntimeParameterBagLogger
     }
 
     /**
-     * Log a message at the specified level. 
+     * Log a message at the specified level.
      *
      * @param string $message
      */

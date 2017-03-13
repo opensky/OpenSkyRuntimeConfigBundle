@@ -3,9 +3,11 @@
 namespace OpenSky\Bundle\RuntimeConfigBundle\Tests\DependencyInjection;
 
 use OpenSky\Bundle\RuntimeConfigBundle\DependencyInjection\OpenSkyRuntimeConfigExtension;
+use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class OpenSkyRuntimeConfigExtensionTest extends \PHPUnit_Framework_TestCase
+class OpenSkyRuntimeConfigExtensionTest extends TestCase
 {
     /**
      * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
@@ -90,7 +92,7 @@ class OpenSkyRuntimeConfigExtensionTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException OutOfBoundsException
+     * @expectedException \OutOfBoundsException
      */
     public function testLoadShouldNotAddLoggerArgumentIfLoggingDisabled()
     {
@@ -110,7 +112,7 @@ class OpenSkyRuntimeConfigExtensionTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
+     * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
      */
     public function testLoadShouldThrowExceptionForInvalidLogLevel()
     {
@@ -150,7 +152,7 @@ class OpenSkyRuntimeConfigExtensionTest extends \PHPUnit_Framework_TestCase
     {
         return array_map(
             function($level){ return (array) $level; },
-            get_class_methods('Symfony\Component\HttpKernel\Log\LoggerInterface')
+            get_class_methods(LoggerInterface::class)
         );
     }
 }

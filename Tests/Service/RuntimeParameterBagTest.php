@@ -2,15 +2,21 @@
 
 namespace OpenSky\Bundle\RuntimeConfigBundle\Tests\Service;
 
+use OpenSky\Bundle\RuntimeConfigBundle\Model\ParameterProviderInterface;
 use OpenSky\Bundle\RuntimeConfigBundle\Service\RuntimeParameterBag;
+use OpenSky\Bundle\RuntimeConfigBundle\Service\RuntimeParameterBagLogger;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class RuntimeParameterBagTest extends \PHPUnit_Framework_TestCase
+class RuntimeParameterBagTest extends TestCase
 {
     public function testShouldImplementContainerAwareInterface()
     {
         $bag = new RuntimeParameterBag($this->getMockParameterProvider());
 
-        $this->assertInstanceOf('Symfony\Component\DependencyInjection\ContainerAwareInterface', $bag);
+        $this->assertInstanceOf(ContainerAwareInterface::class, $bag);
     }
 
     public function testAllShouldReturnAllParameters()
@@ -52,39 +58,45 @@ class RuntimeParameterBagTest extends \PHPUnit_Framework_TestCase
 
     public function testDeinitialize()
     {
-        $parameters = array(
+        $provider = $this->createMock(ParameterProviderInterface::class);
+
+        $bag = new RuntimeParameterBag($provider);
+
+        $parameters1 = array(
             'foo' => 'bar',
             'fuu' => 'baz',
         );
 
-        $provider = $this->getMockParameterProvider($parameters);
+        $provider->expects($this->at(0))
+            ->method('getParametersAsKeyValueHash')
+            ->willReturn($parameters1);
 
-        $bag = new RuntimeParameterBag($provider);
+        $parameters2 = array(
+            'foo2' => 'bar2',
+            'fuu2' => 'baz2',
+        );
+
+        $provider->expects($this->at(1))
+            ->method('getParametersAsKeyValueHash')
+            ->willReturn($parameters2);
 
         $this->assertEquals('bar', $bag->get('foo'));
         $this->assertEquals('baz', $bag->get('fuu'));
+
         $bag->deinitialize();
 
-        $parameters = array(
-            'f' => 'b',
-            'bz' => 'fu',
-        );
-        $provider->expects($this->any())
-            ->method('getParametersAsKeyValueHash')
-            ->will($this->returnValue($parameters));
-
-        $this->assertEquals('f', $bag->get('b'));
-        $this->assertEquals('bz', $bag->get('fu'));
+        $this->assertEquals('bar2', $bag->get('foo2'));
+        $this->assertEquals('baz2', $bag->get('fuu2'));
     }
 
     public function testGetShouldDeferToContainerForUndefinedParameterWithContainer()
     {
-        $container = $this->getMock('Symfony\Component\DependencyInjection\ContainerInterface');
+        $container = $this->createMock(ContainerInterface::class);
 
         $container->expects($this->once())
             ->method('getParameter')
             ->with('foo')
-            ->will($this->returnValue('bar'));
+            ->willReturn('bar');
 
         $bag = new RuntimeParameterBag($this->getMockParameterProvider());
         $bag->setContainer($container);
@@ -93,43 +105,47 @@ class RuntimeParameterBagTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException
+     * @expectedException \Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException
      */
     public function testGetShouldThrowExceptionForUndefinedParameterWithoutContainer()
     {
         $bag = new RuntimeParameterBag($this->getMockParameterProvider());
 
+        $bag->setContainer(new Container());
+
         $bag->get('foo');
     }
 
     /**
-     * @expectedException Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException
+     * @expectedException \Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException
      */
     public function testGetShouldLogNonexistentParameterWithAvailableLogger()
     {
         $bag = new RuntimeParameterBag($this->getMockParameterProvider(), $this->getMockRuntimeParameterBagLogger('foo'));
+
+        $bag->setContainer(new Container());
 
         $bag->get('foo');
     }
 
     private function getMockParameterProvider(array $parameters = array())
     {
-        $provider = $this->getMock('OpenSky\Bundle\RuntimeConfigBundle\Model\ParameterProviderInterface');
+        $provider = $this->createMock(ParameterProviderInterface::class);
 
         $provider->expects($this->any())
             ->method('getParametersAsKeyValueHash')
-            ->will($this->returnValue($parameters));
+            ->willReturn($parameters);
 
         return $provider;
     }
 
     private function getMockRuntimeParameterBagLogger($expectedLogArgumentContains)
     {
-        $logger = $this->getMockBuilder('OpenSky\Bundle\RuntimeConfigBundle\Service\RuntimeParameterBagLogger')
+        $logger = $this->getMockBuilder(RuntimeParameterBagLogger::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $logger->expects($this->once())
+        $logger->expects($this->any())
             ->method('log')
             ->with($this->stringContains($expectedLogArgumentContains));
 

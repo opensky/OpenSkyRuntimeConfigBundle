@@ -3,11 +3,13 @@
 namespace OpenSky\Bundle\RuntimeConfigBundle\Tests\Service;
 
 use OpenSky\Bundle\RuntimeConfigBundle\Service\RuntimeParameterBagLogger;
+use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
-class RuntimeParameterBagLoggerTest extends \PHPUnit_Framework_TestCase
+class RuntimeParameterBagLoggerTest extends TestCase
 {
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testConstructorShouldThrowExceptionForInvalidLevel()
     {
@@ -19,7 +21,7 @@ class RuntimeParameterBagLoggerTest extends \PHPUnit_Framework_TestCase
      */
     public function testShouldLogWithValidLevel($level)
     {
-        $innerLogger = $this->getMock('Symfony\Component\HttpKernel\Log\LoggerInterface');
+        $innerLogger = $this->createMock(LoggerInterface::class);
 
         $innerLogger->expects($this->once())
             ->method($level)
@@ -38,11 +40,17 @@ class RuntimeParameterBagLoggerTest extends \PHPUnit_Framework_TestCase
         $logger->log('message');
     }
 
+    /**
+     * @return array
+     */
     public function provideValidLogLevels()
     {
-        return array_map(
-            function($level){ return (array) $level; },
-            get_class_methods('Symfony\Component\HttpKernel\Log\LoggerInterface')
-        );
+        $levels = array_filter(get_class_methods(LoggerInterface::class), function($method) {
+            return $method !== 'log';
+        });
+
+        return array_map(function($level) {
+            return [$level];
+        }, $levels);
     }
 }
