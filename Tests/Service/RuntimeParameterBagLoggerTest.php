@@ -3,6 +3,7 @@
 namespace OpenSky\Bundle\RuntimeConfigBundle\Tests\Service;
 
 use OpenSky\Bundle\RuntimeConfigBundle\Service\RuntimeParameterBagLogger;
+use OpenSky\Bundle\RuntimeConfigBundle\Util\LogUtil;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
@@ -45,12 +46,8 @@ class RuntimeParameterBagLoggerTest extends TestCase
      */
     public function provideValidLogLevels()
     {
-        $levels = array_filter(get_class_methods(LoggerInterface::class), function($method) {
-            return $method !== 'log';
-        });
-
         return array_map(function($level) {
             return [$level];
-        }, $levels);
+        }, LogUtil::getValidLogLevels());
     }
 }

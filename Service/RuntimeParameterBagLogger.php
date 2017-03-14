@@ -2,6 +2,7 @@
 
 namespace OpenSky\Bundle\RuntimeConfigBundle\Service;
 
+use OpenSky\Bundle\RuntimeConfigBundle\Util\LogUtil;
 use Psr\Log\LoggerInterface;
 
 class RuntimeParameterBagLogger
@@ -18,11 +19,7 @@ class RuntimeParameterBagLogger
      */
     public function __construct($level, LoggerInterface $logger = null)
     {
-        $levels = array_filter(get_class_methods(LoggerInterface::class), function($method) {
-            return $method !== 'log';
-        });
-
-        if (!in_array($level, $levels)) {
+        if (!in_array($level, LogUtil::getValidLogLevels())) {
             throw new \InvalidArgumentException(sprintf('The "%s" level does not correspond to a method in LoggerInterface', $level));
         }
 

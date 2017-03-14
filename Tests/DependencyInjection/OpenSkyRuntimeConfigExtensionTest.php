@@ -3,6 +3,7 @@
 namespace OpenSky\Bundle\RuntimeConfigBundle\Tests\DependencyInjection;
 
 use OpenSky\Bundle\RuntimeConfigBundle\DependencyInjection\OpenSkyRuntimeConfigExtension;
+use OpenSky\Bundle\RuntimeConfigBundle\Util\LogUtil;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -148,11 +149,13 @@ class OpenSkyRuntimeConfigExtensionTest extends TestCase
         $this->assertEquals($level, $container->getParameter('opensky.runtime_config.logger.level'));
     }
 
+    /**
+     * @return array
+     */
     public function provideValidLogLevels()
     {
-        return array_map(
-            function($level){ return (array) $level; },
-            get_class_methods(LoggerInterface::class)
-        );
+        return array_map(function($level) {
+            return [$level];
+        }, LogUtil::getValidLogLevels());
     }
 }
