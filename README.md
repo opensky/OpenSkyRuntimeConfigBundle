@@ -84,7 +84,16 @@ parameter that is not yet defined in your runtime configuration.
 Consider the scenario where "my.service" depends on a dynamic parameter
 "my.service.enabled".
 
-Runtime parameters may be conveniently injected by abusing the anonymous service
+For Symfony 2.4+, the preferred way to inject runtime parameters is using
+Symfony's expression language syntax:
+
+    # Resources/config/my_service.xml
+
+    <service id="my.service" class="MyService">
+        <argument type="expression">service('opensky.runtime_config').get('my.service.enabled')</argument>
+    </service>
+
+Alternatively, runtime parameters may be conveniently injected by abusing the anonymous service
 syntax in XML configurations:
 
     # Resources/config/my_service.xml
