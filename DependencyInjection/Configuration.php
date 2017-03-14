@@ -2,9 +2,9 @@
 
 namespace OpenSky\Bundle\RuntimeConfigBundle\DependencyInjection;
 
-use Psr\Log\LoggerInterface;
-use Symfony\Component\Config\Definition\ConfigurationInterface;
+use OpenSky\Bundle\RuntimeConfigBundle\Util\LogUtil;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
+use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 class Configuration implements ConfigurationInterface
 {
@@ -15,10 +15,6 @@ class Configuration implements ConfigurationInterface
     {
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('opensky_runtime_config');
-
-        $loggerLevels = array_filter(get_class_methods(LoggerInterface::class), function($method) {
-            return $method !== 'log';
-        });
 
         $rootNode
             ->children()
@@ -43,7 +39,7 @@ class Configuration implements ConfigurationInterface
                                 ->then(function($v){ return strtolower($v); })
                             ->end()
                             ->validate()
-                                ->ifNotInArray($loggerLevels)
+                                ->ifNotInArray(LogUtil::getValidLogLevels())
                                 ->thenInvalid('The "%s" level does not correspond to a method in LoggerInterface')
                             ->end()
                         ->end()
