@@ -2,6 +2,9 @@
 
 namespace OpenSky\Bundle\RuntimeConfigBundle\Tests\Entity;
 
+use OpenSky\Bundle\RuntimeConfigBundle\Entity\ParameterRepository;
+use OpenSky\Bundle\RuntimeConfigBundle\Model\ParameterProviderInterface;
+
 class ParameterRepositoryTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
@@ -13,11 +16,11 @@ class ParameterRepositoryTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldImplementParameterProviderInterface()
     {
-        $repository = $this->getMockBuilder('OpenSky\Bundle\RuntimeConfigBundle\Entity\ParameterRepository')
+        $repository = $this->getMockBuilder(ParameterRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->assertInstanceOf('OpenSky\Bundle\RuntimeConfigBundle\Model\ParameterProviderInterface', $repository);
+        $this->assertInstanceOf(ParameterProviderInterface::class, $repository);
     }
 
     /**
@@ -25,7 +28,7 @@ class ParameterRepositoryTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetParametersAsKeyValueHashShouldExecuteQuery(array $queryResults, array $expectedParameters)
     {
-        $repository = $this->getMockBuilder('OpenSky\Bundle\RuntimeConfigBundle\Entity\ParameterRepository')
+        $repository = $this->getMockBuilder(ParameterRepository::class)
             ->disableOriginalConstructor()
             ->setMethods(array('createQueryBuilder'))
             ->getMock();

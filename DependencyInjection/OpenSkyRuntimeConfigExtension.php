@@ -12,7 +12,7 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 class OpenSkyRuntimeConfigExtension extends Extension
 {
     /**
-     * @see Symfony\Component\DependencyInjection\Extension\ExtensionInterface::load()
+     * {@inheritdoc}
      */
     public function load(array $configs, ContainerBuilder $container)
     {
@@ -36,7 +36,7 @@ class OpenSkyRuntimeConfigExtension extends Extension
     }
 
     /**
-     * @see Symfony\Component\DependencyInjection\Extension\ExtensionInterface::getAlias()
+     * {@inheritdoc}
      * @codeCoverageIgnore
      */
     public function getAlias()

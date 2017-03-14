@@ -5,7 +5,6 @@ namespace OpenSky\Bundle\RuntimeConfigBundle\Service;
 use OpenSky\Bundle\RuntimeConfigBundle\Model\ParameterProviderInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException;
 use Symfony\Component\DependencyInjection\ParameterBag\FrozenParameterBag;
 
 class RuntimeParameterBag extends FrozenParameterBag implements ContainerAwareInterface
@@ -18,8 +17,8 @@ class RuntimeParameterBag extends FrozenParameterBag implements ContainerAwareIn
     /**
      * Constructor.
      *
-     * @param ParameterProvider         $parameterProvider Parameter provider
-     * @param RuntimeParameterBagLogger $logger            Logger
+     * @param ParameterProviderInterface $parameterProvider Parameter provider
+     * @param RuntimeParameterBagLogger  $logger            Logger
      */
     public function __construct(ParameterProviderInterface $parameterProvider, RuntimeParameterBagLogger $logger = null)
     {
@@ -30,7 +29,7 @@ class RuntimeParameterBag extends FrozenParameterBag implements ContainerAwareIn
     }
 
     /**
-     * @see Symfony\Component\DependencyInjection\ContainerAwareInterface::setContainer()
+     * {@inheritdoc}
      */
     public function setContainer(ContainerInterface $container = null)
     {
@@ -41,7 +40,7 @@ class RuntimeParameterBag extends FrozenParameterBag implements ContainerAwareIn
      * Gets all defined parameters. This method does not consider parameters
      * from the service container, regardless of its availability.
      *
-     * @see Symfony\Component\DependencyInjection\ParameterBag\ParameterBag::all()
+     * {@inheritdoc}
      */
     public function all()
     {
@@ -54,7 +53,7 @@ class RuntimeParameterBag extends FrozenParameterBag implements ContainerAwareIn
      * Gets a parameter by name. If the parameter is undefined, this method will
      * defer to the service container if available.
      *
-     * @see Symfony\Component\DependencyInjection\ParameterBag\ParameterBag::get()
+     * {@inheritdoc}
      */
     public function get($name)
     {
@@ -75,7 +74,7 @@ class RuntimeParameterBag extends FrozenParameterBag implements ContainerAwareIn
      * Returns whether a parameter is defined. This method does not consider
      * parameters from the service container, regardless of its availability.
      *
-     * @see Symfony\Component\DependencyInjection\ParameterBag\ParameterBag::has()
+     * {@inheritdoc}
      */
     public function has($name)
     {

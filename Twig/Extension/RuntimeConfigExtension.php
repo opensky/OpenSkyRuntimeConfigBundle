@@ -12,7 +12,7 @@ class RuntimeConfigExtension extends \Twig_Extension
     /**
      * Constructor.
      *
-     * @param ContainerInterface $container
+     * @param RuntimeParameterBag $runtimeConfig
      */
     public function __construct(RuntimeParameterBag $runtimeConfig)
     {
