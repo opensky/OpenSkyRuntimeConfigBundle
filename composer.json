@@ -6,13 +6,16 @@
     "homepage": "https://github.com/opensky/OpenSkyRuntimeConfigBundle",
     "license": "BSD",
     "require": {
-        "php": ">=5.3.2",
-        "symfony/symfony": ">=2.0.0"
+        "php": ">=5.5.9",
+        "symfony/symfony": "^3.2",
+        "psr/log": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.0"
     },
     "autoload": {
-        "psr-0": {
-            "OpenSky\\Bundle\\RuntimeConfigBundle": ""
+        "psr-4": {
+            "OpenSky\\Bundle\\RuntimeConfigBundle\\": ""
         }
-    },
-    "target-dir": "OpenSky/Bundle/RuntimeConfigBundle"
+    }
 }

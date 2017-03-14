@@ -2,17 +2,17 @@
 
 namespace OpenSky\Bundle\RuntimeConfigBundle\DependencyInjection;
 
-use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Definition\Processor;
+use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class OpenSkyRuntimeConfigExtension extends Extension
 {
     /**
-     * @see Symfony\Component\DependencyInjection\Extension\ExtensionInterface::load()
+     * {@inheritdoc}
      */
     public function load(array $configs, ContainerBuilder $container)
     {
@@ -36,8 +36,7 @@ class OpenSkyRuntimeConfigExtension extends Extension
     }
 
     /**
-     * @see Symfony\Component\DependencyInjection\Extension\ExtensionInterface::getAlias()
-     * @codeCoverageIgnore
+     * {@inheritdoc}
      */
     public function getAlias()
     {
