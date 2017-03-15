@@ -16,20 +16,22 @@ the history behind this bundle may be found on the [symfony-devs][] mailing list
   [Flickr]: http://code.flickr.com/blog/2009/12/02/flipping-out/
   [symfony-devs]: https://groups.google.com/forum/#!msg/symfony-devs/DKSoai_CWX4/qJVeFhL6GzAJ
 
-## Note
-
-OpenSkyRuntimeConfigBundle 1.x is compatible with Symfony 2.x, but is no longer maintained.
-OpenSkyRuntimeConfigBundle 2.x is compatible with Symfony 3.x and will be actively maintained.
-Please upgrade to OpenSkyRuntimeConfigBundle 2.x as soon as possible.
-
 ## Installation
 
 ### Step 1: Download OpenSkyRuntimeConfigBundle using composer:
 
 Require the bundle with composer: 
 
+For Symfony 3.x, you must use the 2.0 branch:
+
 ```sh
-$ composer require opensky/runtime-config-bundle
+$ composer require opensky/runtime-config-bundle 2.0.*@dev
+```
+
+For Symfony 2.x, you must use the 1.0 branch:
+
+```sh
+$ composer require opensky/runtime-config-bundle 1.0.*@dev
 ```
 
 ### Step 2: Enable the bundle
