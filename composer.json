@@ -17,6 +17,5 @@
             "OpenSky\\Bundle\\RuntimeConfigBundle": ""
         }
     },
-    "minimum-stability": "dev",
     "target-dir": "OpenSky/Bundle/RuntimeConfigBundle"
 }
