@@ -16,10 +16,5 @@
         "psr-4": {
             "OpenSky\\Bundle\\RuntimeConfigBundle\\": ""
         }
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "2.0-dev"
-        }
     }
 }
