@@ -25,13 +25,13 @@ Require the bundle with composer:
 For Symfony 3.x, you must use the 2.0 branch:
 
 ```sh
-$ composer require opensky/runtime-config-bundle 2.0.*@dev
+$ composer require opensky/runtime-config-bundle ~2.0
 ```
 
 For Symfony 2.x, you must use the 1.0 branch:
 
 ```sh
-$ composer require opensky/runtime-config-bundle 1.0.*@dev
+$ composer require opensky/runtime-config-bundle ~1.0
 ```
 
 ### Step 2: Enable the bundle
