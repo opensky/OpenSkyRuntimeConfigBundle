@@ -24,6 +24,7 @@ class RuntimeParameterBagTest extends TestCase
         $parameters = array(
             'foo' => 'bar',
             'fuu' => 'baz',
+            'fii' => null,
         );
 
         $bag = new RuntimeParameterBag($this->getMockParameterProvider($parameters));
@@ -48,12 +49,14 @@ class RuntimeParameterBagTest extends TestCase
         $parameters = array(
             'foo' => 'bar',
             'fuu' => 'baz',
+            'fii' => null,
         );
 
         $bag = new RuntimeParameterBag($this->getMockParameterProvider($parameters));
 
         $this->assertEquals('bar', $bag->get('foo'));
         $this->assertEquals('baz', $bag->get('fuu'));
+        $this->assertSame(null, $bag->get('fii'));
     }
 
     public function testDeinitialize()
