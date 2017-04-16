@@ -2,13 +2,14 @@
 
 namespace OpenSky\Bundle\RuntimeConfigBundle\DependencyInjection;
 
-use Symfony\Component\Config\Definition\ConfigurationInterface;
+use OpenSky\Bundle\RuntimeConfigBundle\Util\LogUtil;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
+use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 class Configuration implements ConfigurationInterface
 {
     /**
-     * @see Symfony\Component\Config\Definition\ConfigurationInterface::getConfigTreeBuilder()
+     * {@inheritdoc}
      */
     public function getConfigTreeBuilder()
     {
@@ -17,13 +18,20 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->scalarNode('provider')->isRequired()->cannotBeEmpty()->end()
-                ->scalarNode('cascade')->defaultTrue()->end()
+                ->scalarNode('provider')
+                    ->isRequired()
+                    ->cannotBeEmpty()
+                ->end()
+                ->scalarNode('cascade')
+                    ->defaultTrue()
+                ->end()
                 ->arrayNode('logging')
                     ->addDefaultsIfNotSet()
                     ->canBeUnset()
                     ->children()
-                        ->scalarNode('enabled')->defaultTrue()->end()
+                        ->scalarNode('enabled')
+                            ->defaultTrue()
+                        ->end()
                         ->scalarNode('level')
                             ->defaultValue('debug')
                             ->beforeNormalization()
@@ -31,7 +39,7 @@ class Configuration implements ConfigurationInterface
                                 ->then(function($v){ return strtolower($v); })
                             ->end()
                             ->validate()
-                                ->ifNotInArray(get_class_methods('Symfony\Component\HttpKernel\Log\LoggerInterface'))
+                                ->ifNotInArray(LogUtil::getValidLogLevels())
                                 ->thenInvalid('The "%s" level does not correspond to a method in LoggerInterface')
                             ->end()
                         ->end()
