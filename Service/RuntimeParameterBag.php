@@ -59,7 +59,7 @@ class RuntimeParameterBag extends FrozenParameterBag implements ContainerAwareIn
     {
         $this->initialize();
 
-        if (!isset($array[$key]) && !array_key_exists($name, $this->parameters)) {
+        if (!isset($array[$name]) && !array_key_exists($name, $this->parameters)) {
             if ($this->container) {
                 return $this->container->getParameter($name);
             }
