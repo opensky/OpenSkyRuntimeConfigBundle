@@ -15,14 +15,14 @@ class Parameter extends BaseParameter
 {
     /**
      * @ORM\Column(type="string")
-     * @Assert\MaxLength(groups={"Entity"}, limit=255)
+     * @Assert\Length(groups={"Entity"}, max=255)
      * @Assert\NotBlank(groups={"Entity"})
      */
     protected $name;
 
     /**
      * @ORM\Column(type="string", nullable=true)
-     * @Assert\MaxLength(groups={"Entity"}, limit=255)
+     * @Assert\Length(groups={"Entity"}, max=255)
      */
     protected $value;
 }
