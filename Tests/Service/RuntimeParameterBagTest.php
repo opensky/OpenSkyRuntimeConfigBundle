@@ -21,11 +21,11 @@ class RuntimeParameterBagTest extends TestCase
 
     public function testAllShouldReturnAllParameters()
     {
-        $parameters = array(
+        $parameters = [
             'foo' => 'bar',
             'fuu' => 'baz',
             'fii' => null,
-        );
+        ];
 
         $bag = new RuntimeParameterBag($this->getMockParameterProvider($parameters));
 
@@ -34,9 +34,9 @@ class RuntimeParameterBagTest extends TestCase
 
     public function testHasShouldReturnWhetherAParameterExists()
     {
-        $parameters = array(
+        $parameters = [
             'foo' => 'bar',
-        );
+        ];
 
         $bag = new RuntimeParameterBag($this->getMockParameterProvider($parameters));
 
@@ -46,11 +46,11 @@ class RuntimeParameterBagTest extends TestCase
 
     public function testGetShouldReturnParameterValues()
     {
-        $parameters = array(
+        $parameters = [
             'foo' => 'bar',
             'fuu' => 'baz',
             'fii' => null,
-        );
+        ];
 
         $bag = new RuntimeParameterBag($this->getMockParameterProvider($parameters));
 
@@ -65,19 +65,19 @@ class RuntimeParameterBagTest extends TestCase
 
         $bag = new RuntimeParameterBag($provider);
 
-        $parameters1 = array(
+        $parameters1 = [
             'foo' => 'bar',
             'fuu' => 'baz',
-        );
+        ];
 
         $provider->expects($this->at(0))
             ->method('getParametersAsKeyValueHash')
             ->willReturn($parameters1);
 
-        $parameters2 = array(
+        $parameters2 = [
             'foo2' => 'bar2',
             'fuu2' => 'baz2',
-        );
+        ];
 
         $provider->expects($this->at(1))
             ->method('getParametersAsKeyValueHash')
@@ -131,7 +131,7 @@ class RuntimeParameterBagTest extends TestCase
         $bag->get('foo');
     }
 
-    private function getMockParameterProvider(array $parameters = array())
+    private function getMockParameterProvider(array $parameters = [])
     {
         $provider = $this->createMock(ParameterProviderInterface::class);
 
@@ -144,9 +144,7 @@ class RuntimeParameterBagTest extends TestCase
 
     private function getMockRuntimeParameterBagLogger($expectedLogArgumentContains)
     {
-        $logger = $this->getMockBuilder(RuntimeParameterBagLogger::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $logger = $this->createMock(RuntimeParameterBagLogger::class);
 
         $logger->expects($this->any())
             ->method('log')

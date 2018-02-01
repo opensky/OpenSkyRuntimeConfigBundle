@@ -9,9 +9,24 @@ use Symfony\Component\DependencyInjection\ParameterBag\FrozenParameterBag;
 
 class RuntimeParameterBag extends FrozenParameterBag implements ContainerAwareInterface
 {
+    /**
+     * @var ContainerInterface|null
+     */
     private $container;
+
+    /**
+     * @var bool
+     */
     private $initialized = false;
+
+    /**
+     * @var RuntimeParameterBagLogger|null
+     */
     private $logger;
+
+    /**
+     * @var ParameterProviderInterface
+     */
     private $parameterProvider;
 
     /**
