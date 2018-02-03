@@ -17,7 +17,7 @@ use Symfony\Component\Yaml\Yaml;
 class Parameter extends BaseParameter
 {
     /**
-     * @ORM\Column(type="string", unique=true)
+     * @ORM\Column(type="string")
      * @Assert\Length(groups={"Entity"}, max=255)
      * @Assert\NotBlank(groups={"Entity"})
      */
