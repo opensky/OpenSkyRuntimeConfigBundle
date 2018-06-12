@@ -9,17 +9,18 @@ use Symfony\Component\DependencyInjection\ParameterBag\FrozenParameterBag;
 
 class RuntimeParameterBag extends FrozenParameterBag implements ContainerAwareInterface
 {
+    /** @var ContainerInterface */
     private $container;
+
+    /** @var bool */
     private $initialized = false;
+
+    /** @var RuntimeParameterBagLogger */
     private $logger;
+
+    /** @var ParameterProviderInterface */
     private $parameterProvider;
 
-    /**
-     * Constructor.
-     *
-     * @param ParameterProviderInterface $parameterProvider Parameter provider
-     * @param RuntimeParameterBagLogger $logger            Logger
-     */
     public function __construct(ParameterProviderInterface $parameterProvider, RuntimeParameterBagLogger $logger = null)
     {
         parent::__construct();
@@ -80,7 +81,15 @@ class RuntimeParameterBag extends FrozenParameterBag implements ContainerAwareIn
     {
         $this->initialize();
 
-        return parent::has($name);
+        if (parent::has($name)) {
+            return true;
+        }
+
+        if ($this->container !== null) {
+            return $this->container->hasParameter($name);
+        }
+
+        return false;
     }
 
     public function deinitialize()
