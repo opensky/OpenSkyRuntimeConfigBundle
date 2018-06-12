@@ -44,6 +44,27 @@ class RuntimeParameterBagTest extends TestCase
         $this->assertFalse($bag->has('bar'));
     }
 
+    public function testHasShouldCheckContainer()
+    {
+        $parameters = array(
+            'foo' => 'bar',
+        );
+
+        $bag = new RuntimeParameterBag($this->getMockParameterProvider($parameters));
+        $container = $this->createMock(ContainerInterface::class);
+        $bag->setContainer($container);
+        $container->expects($this->exactly(2))
+            ->method('hasParameter')
+            ->will($this->returnValueMap([
+                ['bar', false],
+                ['baz', true],
+            ]));
+
+        $this->assertTrue($bag->has('foo'));
+        $this->assertFalse($bag->has('bar'));
+        $this->assertTrue($bag->has('baz'));
+    }
+
     public function testGetShouldReturnParameterValues()
     {
         $parameters = array(
