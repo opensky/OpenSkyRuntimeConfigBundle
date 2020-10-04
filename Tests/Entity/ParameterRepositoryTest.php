@@ -11,7 +11,7 @@ class ParameterRepositoryTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    public function setUp()
+    public function setUp(): void
     {
         if (!class_exists('Doctrine\ORM\EntityRepository')) {
             $this->markTestSkipped('Doctrine ORM library is not available');

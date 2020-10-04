@@ -26,9 +26,9 @@ class RuntimeConfigExtension extends \Twig_Extension
      */
     public function getFunctions()
     {
-        return array(
-            new \Twig_SimpleFunction('runtime_config', array($this, 'getRuntimeConfig')),
-        );
+        return [
+            new \Twig_SimpleFunction('runtime_config', [$this, 'getRuntimeConfig']),
+        ];
     }
 
     /**

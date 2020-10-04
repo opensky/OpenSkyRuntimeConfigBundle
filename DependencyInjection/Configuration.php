@@ -13,8 +13,8 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('opensky_runtime_config');
+        $treeBuilder = new TreeBuilder('opensky_runtime_config');
+        $rootNode = $treeBuilder->getRootNode();
 
         $rootNode
             ->children()

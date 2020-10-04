@@ -44,7 +44,7 @@ class RuntimeParameterBag extends FrozenParameterBag implements ContainerAwareIn
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function setContainer(ContainerInterface $container = null)
     {
@@ -55,7 +55,7 @@ class RuntimeParameterBag extends FrozenParameterBag implements ContainerAwareIn
      * Gets all defined parameters. This method does not consider parameters
      * from the service container, regardless of its availability.
      *
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function all()
     {
@@ -68,7 +68,7 @@ class RuntimeParameterBag extends FrozenParameterBag implements ContainerAwareIn
      * Gets a parameter by name. If the parameter is undefined, this method will
      * defer to the service container if available.
      *
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function get($name)
     {
@@ -89,7 +89,7 @@ class RuntimeParameterBag extends FrozenParameterBag implements ContainerAwareIn
      * Returns whether a parameter is defined. This method does not consider
      * parameters from the service container, regardless of its availability.
      *
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function has($name)
     {
@@ -100,7 +100,7 @@ class RuntimeParameterBag extends FrozenParameterBag implements ContainerAwareIn
 
     public function deinitialize()
     {
-        $this->parameters = array();
+        $this->parameters = [];
         $this->initialized = false;
     }
 

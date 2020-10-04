@@ -5,6 +5,7 @@ namespace OpenSky\Bundle\RuntimeConfigBundle\Tests\DependencyInjection;
 use OpenSky\Bundle\RuntimeConfigBundle\DependencyInjection\OpenSkyRuntimeConfigExtension;
 use OpenSky\Bundle\RuntimeConfigBundle\Util\LogUtil;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class OpenSkyRuntimeConfigExtensionTest extends TestCase
@@ -122,11 +123,10 @@ class OpenSkyRuntimeConfigExtensionTest extends TestCase
         $this->assertEquals('opensky.runtime_config.logger', (string) $container->findDefinition('opensky.runtime_config')->getArgument(2));
     }
 
-    /**
-     * @expectedException \OutOfBoundsException
-     */
     public function testLoadShouldNotAddLoggerArgumentIfLoggingDisabled()
     {
+        $this->expectException(\OutOfBoundsException::class);
+
         $container = new ContainerBuilder();
         $loader = new OpenSkyRuntimeConfigExtension();
 
@@ -142,11 +142,10 @@ class OpenSkyRuntimeConfigExtensionTest extends TestCase
         $container->findDefinition('opensky.runtime_config')->getArgument(2);
     }
 
-    /**
-     * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
-     */
     public function testLoadShouldThrowExceptionForInvalidLogLevel()
     {
+        $this->expectException(InvalidConfigurationException::class);
+
         $loader = new OpenSkyRuntimeConfigExtension();
 
         $config = [
