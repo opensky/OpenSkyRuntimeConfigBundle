@@ -41,11 +41,10 @@ class OpenSkyRuntimeConfigExtensionTest extends TestCase
         $this->assertTrue($container->getAlias('opensky.runtime_config')->isPublic());
     }
 
-    /**
-     * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
-     */
     public function testLoadShouldThrowExceptionUnlessProviderIsSpecified()
     {
+        $this->expectException(InvalidConfigurationException::class);
+
         $loader = new OpenSkyRuntimeConfigExtension();
 
         $loader->load([[]], new ContainerBuilder());

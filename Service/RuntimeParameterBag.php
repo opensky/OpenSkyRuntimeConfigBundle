@@ -70,7 +70,7 @@ class RuntimeParameterBag extends FrozenParameterBag implements ContainerAwareIn
      *
      * {@inheritDoc}
      */
-    public function get($name)
+    public function get(string $name)
     {
         $this->initialize();
 
@@ -91,7 +91,7 @@ class RuntimeParameterBag extends FrozenParameterBag implements ContainerAwareIn
      *
      * {@inheritDoc}
      */
-    public function has($name)
+    public function has(string $name)
     {
         $this->initialize();
 

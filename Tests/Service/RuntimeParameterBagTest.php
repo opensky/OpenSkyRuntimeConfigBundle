@@ -9,6 +9,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException;
 
 class RuntimeParameterBagTest extends TestCase
 {
@@ -107,11 +108,10 @@ class RuntimeParameterBagTest extends TestCase
         $this->assertEquals('bar', $bag->get('foo'));
     }
 
-    /**
-     * @expectedException \Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException
-     */
     public function testGetShouldThrowExceptionForUndefinedParameterWithoutContainer()
     {
+        $this->expectException(ParameterNotFoundException::class);
+
         $bag = new RuntimeParameterBag($this->getMockParameterProvider());
 
         $bag->setContainer(new Container());
@@ -119,11 +119,10 @@ class RuntimeParameterBagTest extends TestCase
         $bag->get('foo');
     }
 
-    /**
-     * @expectedException \Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException
-     */
     public function testGetShouldLogNonexistentParameterWithAvailableLogger()
     {
+        $this->expectException(ParameterNotFoundException::class);
+
         $bag = new RuntimeParameterBag($this->getMockParameterProvider(), $this->getMockRuntimeParameterBagLogger('foo'));
 
         $bag->setContainer(new Container());
