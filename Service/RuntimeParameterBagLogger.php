@@ -7,7 +7,14 @@ use Psr\Log\LoggerInterface;
 
 class RuntimeParameterBagLogger
 {
+    /**
+     * @var string
+     */
     private $level;
+
+    /**
+     * @var LoggerInterface|null
+     */
     private $logger;
 
     /**
@@ -35,7 +42,7 @@ class RuntimeParameterBagLogger
     public function log($message)
     {
         if (null !== $this->logger) {
-            call_user_func(array($this->logger, $this->level), $message);
+            call_user_func([$this->logger, $this->level], $message);
         }
     }
 }

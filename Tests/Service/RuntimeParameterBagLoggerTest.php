@@ -9,11 +9,10 @@ use Psr\Log\LoggerInterface;
 
 class RuntimeParameterBagLoggerTest extends TestCase
 {
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testConstructorShouldThrowExceptionForInvalidLevel()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         new RuntimeParameterBagLogger('foo');
     }
 
@@ -42,7 +41,7 @@ class RuntimeParameterBagLoggerTest extends TestCase
     }
 
     /**
-     * @return array
+     * @return string[][]
      */
     public function provideValidLogLevels()
     {

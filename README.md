@@ -22,16 +22,8 @@ the history behind this bundle may be found on the [symfony-devs][] mailing list
 
 Require the bundle with composer: 
 
-For Symfony 3.x, you must use the 2.0 branch:
-
 ```sh
-$ composer require opensky/runtime-config-bundle ~2.0
-```
-
-For Symfony 2.x, you must use the 1.0 branch:
-
-```sh
-$ composer require opensky/runtime-config-bundle ~1.0
+$ composer require opensky/runtime-config-bundle
 ```
 
 ### Step 2: Enable the bundle
@@ -40,9 +32,9 @@ Enable the bundle in the kernel:
 
 ```php
 <?php
- 
+
 // app/AppKernel.php
- 
+
 public function registerBundles()
 {
     return [
@@ -57,7 +49,7 @@ The RuntimeParameterBag may be configured with the following:
 
 ```yml
 # app/config/config.yml
- 
+
 opensky_runtime_config:
     provider: parameter.provider.service
     cascade:  true
@@ -95,9 +87,9 @@ XML is recommended for services defined within a bundle:
 
 ```xml
 <?xml version="1.0" ?>
- 
+
 <!-- src/AppBundle/Resources/config/services.xml -->
- 
+
 <services>
     <service id="my.service" class="MyService">
         <argument type="expression">service('opensky.runtime_config').get('my.service.enabled')</argument>
@@ -109,9 +101,9 @@ YAML is recommended for application-wide services:
 
 ```yaml
 # app/config/services.yml
- 
+
 services:
- 
+
     my.service:
         class: MyService
         arguments:
@@ -127,13 +119,13 @@ Building upon the previous XML example, this would look like:
 
 ```xml
 <?xml version="1.0" ?>
- 
+
 <!-- src/AppBundle/Resources/config/services.xml -->
- 
+
 <parameters>
     <parameter key="my.service.enabled">false</parameter>
 </parameters>
- 
+
 <services>
     <service id="my.service" class="MyService">
         <argument type="expression">service('opensky.runtime_config').get('my.service.enabled')</argument>
@@ -164,18 +156,19 @@ Consider the following Entity:
 
 ```php
 <?php
- 
+
 // src/MyBundle/Entity/Parameter.php
- 
+
 namespace MyBundle\Entity\Parameter;
- 
+
 use Doctrine\ORM\Mapping as ORM;
-use OpenSky\Bundle\RuntimeConfigBundle\Entity\Parameter as BaseParameter;
+use OpenSky\Bundle\RuntimeConfigBundle\Model\Parameter as BaseParameter;
+use Symfony\Bridge\Doctrine\Validator\Constraints as AssertORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\ExecutionContext;
-use Symfony\Component\Yaml\Inline;
-use Symfony\Component\Yaml\ParserException;
- 
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Symfony\Component\Yaml\Exception\ParseException;
+use Symfony\Component\Yaml\Yaml;
+
 /**
  * @ORM\Entity(repositoryClass="MyBundle\Entity\ParameterRepository")
  * @ORM\Table(
@@ -189,24 +182,33 @@ use Symfony\Component\Yaml\ParserException;
 class Parameter extends BaseParameter
 {
     /**
+     * @var int
+     *
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
      */
-    protected $id;
-  
+    private $id;
+
+    /**
+     * @return int
+     */
     public function getId()
     {
         return $this->id;
     }
-  
-    public function validateValueAsYaml(ExecutionContext $context)
+
+    /**
+     * @param ExecutionContextInterface $context
+     */
+    public function validateValueAsYaml(ExecutionContextInterface $context)
     {
         try {
-            Inline::load($this->value);
-        } catch (ParserException $e) {
-            $context->setPropertyPath($context->getPropertyPath() . '.value');
-            $context->addViolation('This value is not valid YAML syntax', array(), $this->value);
+            Yaml::parse($this->value);
+        } catch (ParseException $e) {
+            $context->buildViolation('This value is not valid YAML syntax')
+                ->atPath('value')
+                ->addViolation();
         }
     }
 }
@@ -226,22 +228,21 @@ serves as the ParameterProvider for the RuntimeParameterBag:
 
 ```php
 <?php
- 
+
 // src/MyBundle/Entity/ParameterRepository.php
- 
+
 namespace MyBundle\Entity\Parameter;
- 
+
 use OpenSky\Bundle\RuntimeConfigBundle\Entity\ParameterRepository as BaseParameterRepository;
-use Symfony\Component\Yaml\Inline;
- 
+use Symfony\Component\Yaml\Yaml;
+
 class ParameterRepository extends BaseParameterRepository
 {
     public function getParametersAsKeyValueHash()
     {
-        return array_map(
-            function($v){ return Inline::load($v); },
-            parent::getParametersAsKeyValueHash()
-        );
+        return array_map(function($v) {
+            return Yaml::parse($v);
+        }, parent::getParametersAsKeyValueHash());
     }
 }
 ```
@@ -253,4 +254,94 @@ through the same YAML component method.
 Note: although we validate the Entity, it's possible that a value might have
 been manually altered in the database and contain invalid YAML when parameters
 are fetched for provision. If this is a concern, you may want to gracefully
-handle thrown ParserExceptions within `getParametersAsKeyValueHash()`.
+handle thrown ParseExceptions within `getParametersAsKeyValueHash()`.
+
+## Recipe: Interpreting Parameter Values as YAML
+
+It is also possible to store the parameter values as JSON.  In order to do this,
+we need to re-define the value parameter as type "json" instead of "string".
+
+Consider the following Entity:
+
+```php
+<?php
+
+// src/MyBundle/Entity/Parameter.php
+
+namespace MyBundle\Entity\Parameter;
+
+use Doctrine\ORM\Mapping as ORM;
+use OpenSky\Bundle\RuntimeConfigBundle\Model\Parameter as BaseParameter;
+use Symfony\Bridge\Doctrine\Validator\Constraints as AssertORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
+
+/**
+ * @ORM\Entity(repositoryClass="MyBundle\Entity\ParameterRepository")
+ * @ORM\Table(
+ *     name="parameters",
+ *     uniqueConstraints={
+ *         @ORM\UniqueConstraint(name="name_unique", columns={"name"})
+ *     }
+ * )
+ * @Assert\Callback(methods={"validateValueAsJson"})
+ */
+class Parameter extends BaseParameter
+{
+    /**
+     * @var int
+     *
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue
+     */
+    private $id;
+
+    /**
+     * @var mixed
+     *
+     * @ORM\Column(type="json", nullable=true)
+     */
+    protected $value;
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param ExecutionContextInterface $context
+     */
+    public function validateValueAsYaml(ExecutionContextInterface $context)
+    {
+        @json_encode($this->value);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            $context->buildViolation('This value is not valid JSON')
+                ->atPath('value')
+                ->addViolation();
+        }
+    }
+}
+```
+
+In this case, we would not need to override the default repository
+query, getParametersAsKeyValueHash(), as the database results have
+already been json_decoded by Doctrine.
+
+```php
+<?php
+
+// src/MyBundle/Entity/ParameterRepository.php
+
+namespace MyBundle\Entity\Parameter;
+
+use OpenSky\Bundle\RuntimeConfigBundle\Entity\ParameterRepository as BaseParameterRepository;
+
+class ParameterRepository extends BaseParameterRepository
+{
+}
+```
