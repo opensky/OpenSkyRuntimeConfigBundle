@@ -11,7 +11,10 @@
     </parameters>
 
     <services>
-        <service id="opensky.runtime_config" class="%opensky.runtime_config.class%">
+        <service id="opensky.runtime_config" alias="opensky.runtime_config.parameter_bag" public="true" />
+        <service id="Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface" alias="opensky.runtime_config" public="false" />
+
+        <service id="opensky.runtime_config.parameter_bag" class="%opensky.runtime_config.class%" public="false">
             <argument type="service" id="opensky.runtime_config.provider" />
             <argument type="service" id="opensky.runtime_config.logger" />
         </service>
@@ -27,5 +30,4 @@
             <tag name="twig.extension" />
         </service>
     </services>
-
 </container>

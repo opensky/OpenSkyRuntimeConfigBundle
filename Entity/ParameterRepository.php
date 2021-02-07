@@ -8,7 +8,7 @@ use OpenSky\Bundle\RuntimeConfigBundle\Model\ParameterProviderInterface;
 class ParameterRepository extends EntityRepository implements ParameterProviderInterface
 {
     /**
-     * @see OpenSky\Bundle\RuntimeConfigBundle\Model\ParameterProviderInterface::getParametersAsKeyValueHash()
+     * {@inheritdoc}
      */
     public function getParametersAsKeyValueHash()
     {
@@ -17,7 +17,7 @@ class ParameterRepository extends EntityRepository implements ParameterProviderI
             ->getQuery()
             ->getResult();
 
-        $parameters = array();
+        $parameters = [];
 
         foreach ($results as $result) {
             $parameters[$result['name']] = $result['value'];
