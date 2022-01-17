@@ -9,6 +9,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException;
 
 class RuntimeParameterBagTest extends TestCase
 {
@@ -21,11 +22,11 @@ class RuntimeParameterBagTest extends TestCase
 
     public function testAllShouldReturnAllParameters()
     {
-        $parameters = array(
+        $parameters = [
             'foo' => 'bar',
             'fuu' => 'baz',
             'fii' => null,
-        );
+        ];
 
         $bag = new RuntimeParameterBag($this->getMockParameterProvider($parameters));
 
@@ -34,9 +35,9 @@ class RuntimeParameterBagTest extends TestCase
 
     public function testHasShouldReturnWhetherAParameterExists()
     {
-        $parameters = array(
+        $parameters = [
             'foo' => 'bar',
-        );
+        ];
 
         $bag = new RuntimeParameterBag($this->getMockParameterProvider($parameters));
 
@@ -67,11 +68,11 @@ class RuntimeParameterBagTest extends TestCase
 
     public function testGetShouldReturnParameterValues()
     {
-        $parameters = array(
+        $parameters = [
             'foo' => 'bar',
             'fuu' => 'baz',
             'fii' => null,
-        );
+        ];
 
         $bag = new RuntimeParameterBag($this->getMockParameterProvider($parameters));
 
@@ -86,19 +87,19 @@ class RuntimeParameterBagTest extends TestCase
 
         $bag = new RuntimeParameterBag($provider);
 
-        $parameters1 = array(
+        $parameters1 = [
             'foo' => 'bar',
             'fuu' => 'baz',
-        );
+        ];
 
         $provider->expects($this->at(0))
             ->method('getParametersAsKeyValueHash')
             ->willReturn($parameters1);
 
-        $parameters2 = array(
+        $parameters2 = [
             'foo2' => 'bar2',
             'fuu2' => 'baz2',
-        );
+        ];
 
         $provider->expects($this->at(1))
             ->method('getParametersAsKeyValueHash')
@@ -128,11 +129,10 @@ class RuntimeParameterBagTest extends TestCase
         $this->assertEquals('bar', $bag->get('foo'));
     }
 
-    /**
-     * @expectedException \Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException
-     */
     public function testGetShouldThrowExceptionForUndefinedParameterWithoutContainer()
     {
+        $this->expectException(ParameterNotFoundException::class);
+
         $bag = new RuntimeParameterBag($this->getMockParameterProvider());
 
         $bag->setContainer(new Container());
@@ -140,11 +140,10 @@ class RuntimeParameterBagTest extends TestCase
         $bag->get('foo');
     }
 
-    /**
-     * @expectedException \Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException
-     */
     public function testGetShouldLogNonexistentParameterWithAvailableLogger()
     {
+        $this->expectException(ParameterNotFoundException::class);
+
         $bag = new RuntimeParameterBag($this->getMockParameterProvider(), $this->getMockRuntimeParameterBagLogger('foo'));
 
         $bag->setContainer(new Container());
@@ -152,7 +151,7 @@ class RuntimeParameterBagTest extends TestCase
         $bag->get('foo');
     }
 
-    private function getMockParameterProvider(array $parameters = array())
+    private function getMockParameterProvider(array $parameters = [])
     {
         $provider = $this->createMock(ParameterProviderInterface::class);
 
@@ -165,9 +164,7 @@ class RuntimeParameterBagTest extends TestCase
 
     private function getMockRuntimeParameterBagLogger($expectedLogArgumentContains)
     {
-        $logger = $this->getMockBuilder(RuntimeParameterBagLogger::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $logger = $this->createMock(RuntimeParameterBagLogger::class);
 
         $logger->expects($this->any())
             ->method('log')

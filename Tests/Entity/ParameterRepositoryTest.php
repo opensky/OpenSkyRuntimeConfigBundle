@@ -8,7 +8,10 @@ use PHPUnit\Framework\TestCase;
 
 class ParameterRepositoryTest extends TestCase
 {
-    public function setUp()
+    /**
+     * {@inheritdoc}
+     */
+    public function setUp(): void
     {
         if (!class_exists('Doctrine\ORM\EntityRepository')) {
             $this->markTestSkipped('Doctrine ORM library is not available');
@@ -17,21 +20,22 @@ class ParameterRepositoryTest extends TestCase
 
     public function testShouldImplementParameterProviderInterface()
     {
-        $repository = $this->getMockBuilder(ParameterRepository::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $repository = $this->createMock(ParameterRepository::class);
 
         $this->assertInstanceOf(ParameterProviderInterface::class, $repository);
     }
 
     /**
+     * @param array $queryResults
+     * @param array $expectedParameters
+     *
      * @dataProvider provideQueryResultAndExpectedParameters
      */
     public function testGetParametersAsKeyValueHashShouldExecuteQuery(array $queryResults, array $expectedParameters)
     {
         $repository = $this->getMockBuilder(ParameterRepository::class)
             ->disableOriginalConstructor()
-            ->setMethods(array('createQueryBuilder'))
+            ->setMethods(['createQueryBuilder'])
             ->getMock();
 
         $queryBuilder = $this->getMockBuilder('Doctrine\ORM\QueryBuilder')
@@ -40,7 +44,7 @@ class ParameterRepositoryTest extends TestCase
 
         $query = $this->getMockBuilder('Doctrine\ORM\AbstractQuery')
             ->disableOriginalConstructor()
-            ->setMethods(array('getResult', 'getSQL', '_doExecute'))
+            ->setMethods(['getResult', 'getSQL', '_doExecute'])
             ->getMock();
 
         $query->expects($this->once())
@@ -64,18 +68,18 @@ class ParameterRepositoryTest extends TestCase
 
     public function provideQueryResultAndExpectedParameters()
     {
-        return array(
-            array(
-                array(),
-                array(),
-            ),
-            array(
-                array(
-                    array('name' => 'foo', 'value' => 'bar'),
-                    array('name' => 'fuu', 'value' => 'baz'),
-                ),
-                array('foo' => 'bar', 'fuu' => 'baz'),
-            )
-        );
+        return [
+            [
+                [],
+                [],
+            ],
+            [
+                [
+                    ['name' => 'foo', 'value' => 'bar'],
+                    ['name' => 'fuu', 'value' => 'baz'],
+                ],
+                ['foo' => 'bar', 'fuu' => 'baz'],
+            ],
+        ];
     }
 }
