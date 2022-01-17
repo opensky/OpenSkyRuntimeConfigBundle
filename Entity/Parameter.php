@@ -12,7 +12,11 @@ use Symfony\Component\Yaml\Yaml;
 
 /**
  * @ORM\MappedSuperclass
- * @AssertORM\UniqueEntity(groups={"Entity"}, fields={"name"}, message="A parameter with the same name already exists; name must be unique")
+ * @AssertORM\UniqueEntity(
+ *     groups={"Entity"},
+ *     fields={"name"},
+ *     message="A parameter with the same name already exists; name must be unique"
+ * )
  */
 class Parameter extends BaseParameter
 {
@@ -21,13 +25,13 @@ class Parameter extends BaseParameter
      * @Assert\Length(groups={"Entity"}, max=255)
      * @Assert\NotBlank(groups={"Entity"})
      */
-    protected $name;
+    protected string $name;
 
     /**
      * @ORM\Column(type="string", nullable=true)
      * @Assert\Length(groups={"Entity"}, max=255)
      */
-    protected $value;
+    protected mixed $value;
 
     /**
      * @param ExecutionContextInterface $context

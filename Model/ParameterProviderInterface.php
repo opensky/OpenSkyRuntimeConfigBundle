@@ -9,5 +9,5 @@ interface ParameterProviderInterface
      *
      * @return array
      */
-    function getParametersAsKeyValueHash();
+    function getParametersAsKeyValueHash(): array;
 }

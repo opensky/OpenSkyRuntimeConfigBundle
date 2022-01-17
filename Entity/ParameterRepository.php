@@ -10,7 +10,7 @@ class ParameterRepository extends EntityRepository implements ParameterProviderI
     /**
      * {@inheritdoc}
      */
-    public function getParametersAsKeyValueHash()
+    public function getParametersAsKeyValueHash(): array
     {
         $results = $this->createQueryBuilder('p')
             ->select('p.name', 'p.value')

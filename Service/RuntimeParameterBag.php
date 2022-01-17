@@ -9,25 +9,10 @@ use Symfony\Component\DependencyInjection\ParameterBag\FrozenParameterBag;
 
 class RuntimeParameterBag extends FrozenParameterBag implements ContainerAwareInterface
 {
-    /**
-     * @var ContainerInterface|null
-     */
-    private $container;
-
-    /**
-     * @var bool
-     */
-    private $initialized = false;
-
-    /**
-     * @var RuntimeParameterBagLogger|null
-     */
-    private $logger;
-
-    /**
-     * @var ParameterProviderInterface
-     */
-    private $parameterProvider;
+    private ContainerInterface|null $container = null;
+    private bool $initialized = false;
+    private RuntimeParameterBagLogger|null $logger;
+    private ParameterProviderInterface $parameterProvider;
 
     public function __construct(ParameterProviderInterface $parameterProvider, RuntimeParameterBagLogger $logger = null)
     {
@@ -51,7 +36,7 @@ class RuntimeParameterBag extends FrozenParameterBag implements ContainerAwareIn
      *
      * {@inheritDoc}
      */
-    public function all()
+    public function all(): array
     {
         $this->initialize();
 
@@ -64,7 +49,7 @@ class RuntimeParameterBag extends FrozenParameterBag implements ContainerAwareIn
      *
      * {@inheritDoc}
      */
-    public function get($name)
+    public function get(string $name): array|bool|string|int|float|null
     {
         $this->initialize();
 
@@ -85,7 +70,7 @@ class RuntimeParameterBag extends FrozenParameterBag implements ContainerAwareIn
      *
      * {@inheritDoc}
      */
-    public function has($name)
+    public function has(string $name): bool
     {
         $this->initialize();
 

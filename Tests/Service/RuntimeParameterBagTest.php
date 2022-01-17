@@ -92,18 +92,14 @@ class RuntimeParameterBagTest extends TestCase
             'fuu' => 'baz',
         ];
 
-        $provider->expects($this->at(0))
-            ->method('getParametersAsKeyValueHash')
-            ->willReturn($parameters1);
-
         $parameters2 = [
             'foo2' => 'bar2',
             'fuu2' => 'baz2',
         ];
 
-        $provider->expects($this->at(1))
+        $provider->expects($this->exactly(2))
             ->method('getParametersAsKeyValueHash')
-            ->willReturn($parameters2);
+            ->willReturnOnConsecutiveCalls($parameters1, $parameters2);
 
         $this->assertEquals('bar', $bag->get('foo'));
         $this->assertEquals('baz', $bag->get('fuu'));

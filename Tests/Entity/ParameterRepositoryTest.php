@@ -35,7 +35,7 @@ class ParameterRepositoryTest extends TestCase
     {
         $repository = $this->getMockBuilder(ParameterRepository::class)
             ->disableOriginalConstructor()
-            ->setMethods(['createQueryBuilder'])
+            ->onlyMethods(['createQueryBuilder'])
             ->getMock();
 
         $queryBuilder = $this->getMockBuilder('Doctrine\ORM\QueryBuilder')
@@ -44,18 +44,18 @@ class ParameterRepositoryTest extends TestCase
 
         $query = $this->getMockBuilder('Doctrine\ORM\AbstractQuery')
             ->disableOriginalConstructor()
-            ->setMethods(['getResult', 'getSQL', '_doExecute'])
+            ->onlyMethods(['getResult', 'getSQL', '_doExecute'])
             ->getMock();
 
         $query->expects($this->once())
             ->method('getResult')
             ->willReturn($queryResults);
 
-        $queryBuilder->expects($this->at(0))
+        $queryBuilder->expects($this->once())
             ->method('select')
             ->willReturn($queryBuilder);
 
-        $queryBuilder->expects($this->at(1))
+        $queryBuilder->expects($this->once())
             ->method('getQuery')
             ->willReturn($query);
 
