@@ -4,8 +4,10 @@ namespace OpenSky\Bundle\RuntimeConfigBundle\Twig\Extension;
 
 use OpenSky\Bundle\RuntimeConfigBundle\Service\RuntimeParameterBag;
 use Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
-class RuntimeConfigExtension extends \Twig_Extension
+class RuntimeConfigExtension extends AbstractExtension
 {
     protected $runtimeConfig;
 
@@ -24,21 +26,11 @@ class RuntimeConfigExtension extends \Twig_Extension
      *
      * @return array An array of global functions
      */
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
-            new \Twig_SimpleFunction('runtime_config', [$this, 'getRuntimeConfig']),
+            new TwigFunction('runtime_config', [$this, 'getRuntimeConfig']),
         ];
-    }
-
-    /**
-     * Returns the name of the extension.
-     *
-     * @return string The extension name
-     */
-    public function getName()
-    {
-        return 'runtime_config';
     }
 
     public function getRuntimeConfig($name)
