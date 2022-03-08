@@ -20,9 +20,8 @@ class RuntimeParameterBagLogger
     /**
      * Constructor.
      *
-     * @param string          $level  Log level (should correspond to a logger method)
-     * @param LoggerInterface $logger Logger service
-     * @throws \InvalidArgumentException if level does not correspond to a method in LoggerInterface
+     * @param string $level Log level (should correspond to a logger method)
+     * @param LoggerInterface|null $logger Logger service
      */
     public function __construct($level, LoggerInterface $logger = null)
     {
